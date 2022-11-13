@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Container,
   Stack,
@@ -13,30 +14,69 @@ import {
   Title,
 } from "@mantine/core";
 import { useViewportSize } from "@mantine/hooks";
-import { At, X, Key, Plus } from "tabler-icons-react";
+import { At, X, Key, Plus, User } from "tabler-icons-react";
+import { useForm } from "@mantine/form";
+import { useModals } from "@mantine/modals";
+import { Link, useNavigate } from "react-router-dom";
 
 import Hero from "../assets/Hero.png";
 import Worry from "../assets/Worry.png";
 import Computer from "../assets/Computer.png";
 import Boom from "../assets/Boom.png";
 
+import openErrorModal from "../components/Modals/Error";
+import regex_validate from "../services/regex";
+import { createUser } from "../services/api";
+
 export default function Home() {
   const { height, width } = useViewportSize();
-  const badges = [
-    { name: "Rodrigo" },
-    { name: "Rodrigo" },
-    { name: "Rodrigo" },
-    { name: "Rodrigo" },
-    { name: "Rodrigo" },
-    { name: "Rodrigo" },
-    { name: "Rodrigo" },
-    { name: "Rodrigo" },
-    { name: "Rodrigo" },
-    { name: "Rodrigo" },
-  ];
+  const form = useForm({
+    initialValues: {
+      name: "",
+      email: "",
+      keywords: [],
+    },
+    validate: {
+      email: regex_validate.email,
+      name: regex_validate.name,
+      keywords: regex_validate.keywords,
+    },
+  });
+  const modals = useModals();
+  const [keyword, setKeyword] = useState("");
+  const navigate = useNavigate();
 
-  const removeButton = (
-    <ActionIcon size="xs" radius="xl" variant="transparent">
+  const handleSubmit = async (info) => {
+    try {
+      await createUser(info);
+      navigate("/thank-you");
+    } catch (error) {
+      openErrorModal(modals, "Erro ao fazer o registro!");
+    }
+  };
+
+  const newKeyword = () => {
+    if (keyword.length >= 3) {
+      form.clearFieldError("keywords");
+      form.values.keywords.push(keyword);
+      setKeyword("");
+    } else {
+      form.setFieldError("keywords", "Palavra chave muito curta");
+    }
+  };
+
+  const removeKeyword = (index) => () => {
+    form.values.keywords.splice(index, 1);
+    form.setFieldValue("keywords", form.values.keywords);
+  };
+
+  const removeButton = (index) => (
+    <ActionIcon
+      size="xs"
+      radius="xl"
+      variant="transparent"
+      onClick={removeKeyword(index)}
+    >
       <X size={20} color="white" />
     </ActionIcon>
   );
@@ -126,58 +166,83 @@ export default function Home() {
           Registre-se e receba as noticias
         </Title>
         <Space h="xl" />
-        <Flex
-          gap="xl"
-          direction="column"
-          justify="space-around"
-          align="center"
-          wrap="wrap"
-        >
-          <Stack style={{ minWidth: "40%" }}>
-            <TextInput
-              icon={<At />}
-              placeholder="meu-email@gmail.com"
-              radius="md"
-              label="Seu email"
-              size="lg"
-              style={{ maxWidth: "600px" }}
-            />
-            <Flex align="flex-end" gap="md">
-              <TextInput
-                icon={<Key />}
-                placeholder="PalavraX"
-                radius="md"
-                label="Palavra chave"
-                size="lg"
-              />
-              <Button color="grape" radius="lg" size="lg">
-                <Plus />
-              </Button>
-            </Flex>
-            <Group>
-              {badges.map((badge) => (
-                <Badge
-                  size="xl"
-                  sx={{ paddingRight: 7 }}
-                  rightSection={removeButton}
-                  color="violet"
-                  variant="filled"
-                >
-                  {badge.name}
-                </Badge>
-              ))}
-            </Group>
-          </Stack>
-          <Space h="xl" />
-          <Button
-            color="grape"
-            radius="lg"
-            size="xl"
-            style={{ maxWidth: "280px" }}
+        <form onSubmit={form.onSubmit(handleSubmit)}>
+          <Flex
+            gap="xl"
+            direction="column"
+            justify="space-around"
+            align="center"
+            wrap="wrap"
           >
-            Quero me Inscrever!
-          </Button>
-        </Flex>
+            <Stack style={{ minWidth: "40%" }}>
+              <TextInput
+                icon={<User />}
+                placeholder="Meu Nome"
+                radius="md"
+                label="Seu nome"
+                size="lg"
+                style={{ maxWidth: "600px" }}
+                {...form.getInputProps("name")}
+              />
+              <TextInput
+                icon={<At />}
+                placeholder="meu-email@gmail.com"
+                radius="md"
+                label="Seu email"
+                size="lg"
+                style={{ maxWidth: "600px" }}
+                {...form.getInputProps("email")}
+              />
+              <Flex gap="md">
+                <TextInput
+                  icon={<Key />}
+                  placeholder="PalavraX"
+                  radius="md"
+                  label="Palavra chave"
+                  size="lg"
+                  {...form.getInputProps("keywords")}
+                  value={keyword}
+                  onChange={({ target }) => {
+                    setKeyword(target.value.replace(/\s/g, ""));
+                  }}
+                />
+                <Button
+                  color="grape"
+                  radius="lg"
+                  size="lg"
+                  onClick={newKeyword}
+                  mt="28px"
+                >
+                  <Plus />
+                </Button>
+              </Flex>
+              <Group style={{ maxWidth: "500px" }}>
+                {form.values.keywords.map((keyword, index) => (
+                  <Badge
+                    size="xl"
+                    sx={{ paddingRight: 7 }}
+                    rightSection={removeButton(index)}
+                    color="violet"
+                    variant="filled"
+                    key={`${index}-${keyword}`}
+                  >
+                    {keyword}
+                  </Badge>
+                ))}
+              </Group>
+            </Stack>
+            <Space h="xl" />
+            <Button
+              color="grape"
+              radius="lg"
+              size="xl"
+              style={{ maxWidth: "280px" }}
+              type="submit"
+            >
+              Quero me Inscrever!
+            </Button>
+          </Flex>
+        </form>
         <Space h="xl" style={{ height: "10rem" }} />
       </Stack>
     </Container>
