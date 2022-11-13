@@ -12,6 +12,8 @@ import {
   TextInput,
   Image,
   Title,
+  Center,
+  Anchor,
 } from "@mantine/core";
 import { useViewportSize } from "@mantine/hooks";
 import { At, X, Key, Plus, User } from "tabler-icons-react";
@@ -244,6 +246,14 @@ export default function Home() {
           </Flex>
         </form>
         <Space h="xl" style={{ height: "10rem" }} />
+        <Center>
+          <Text size="md" color="grape">
+            Feito por{" "}
+            <Anchor component={Link} to="/about" color="grape" underline>
+              Rodrigo
+            </Anchor>
+          </Text>
+        </Center>
       </Stack>
     </Container>
   );
