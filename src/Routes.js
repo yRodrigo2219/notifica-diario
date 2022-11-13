@@ -9,7 +9,7 @@ import NotFound from "./pages/NotFound";
 
 export default function AppRoutes() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={`${process.env.PUBLIC_URL}`}>
       <Routes>
         <Route path="/about" element={<About />} />
         <Route path="/thank-you" element={<ThankYou />} />

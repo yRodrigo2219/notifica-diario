@@ -31,7 +31,7 @@ import regex_validate from "../services/regex";
 import { createUser } from "../services/api";
 
 export default function Home() {
-  const { height, width } = useViewportSize();
+  const { width } = useViewportSize();
   const form = useForm({
     initialValues: {
       name: "",
