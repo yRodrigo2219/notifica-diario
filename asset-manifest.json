@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/notifica-diario/static/css/main.c2dd6417.css",
-    "main.js": "/notifica-diario/static/js/main.d449b327.js",
+    "main.js": "/notifica-diario/static/js/main.10fb8775.js",
     "static/media/Hero.png": "/notifica-diario/static/media/Hero.cb9fd7d6e53c9b936031.png",
     "static/media/Boom.png": "/notifica-diario/static/media/Boom.4ca774cc71a8ca57a7f7.png",
     "static/media/Worry.png": "/notifica-diario/static/media/Worry.01e2b4468d9ebb54cbd2.png",
     "static/media/Computer.png": "/notifica-diario/static/media/Computer.b0ec78500afda5a25163.png",
     "index.html": "/notifica-diario/index.html",
     "main.c2dd6417.css.map": "/notifica-diario/static/css/main.c2dd6417.css.map",
-    "main.d449b327.js.map": "/notifica-diario/static/js/main.d449b327.js.map"
+    "main.10fb8775.js.map": "/notifica-diario/static/js/main.10fb8775.js.map"
   },
   "entrypoints": [
     "static/css/main.c2dd6417.css",
-    "static/js/main.d449b327.js"
+    "static/js/main.10fb8775.js"
   ]
 }
